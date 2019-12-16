@@ -1,0 +1,34 @@
+version: '3.4'
+services:
+  mysql:
+    image: mysql
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 6603:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: '12345678'
+      MYSQL_DATABASE: 'store'
+      MYSQL_USER: 'store'
+      MYSQL_PASSWORD: '12345678'
+    volumes:
+      - ./db:/var/lib/mysql
+    networks:
+      - persistence
+  laravel:
+    image: aurelianosza/laravel
+    ports:
+      - 8000:8000
+      - 3000:3000
+      - 3001:3001
+    volumes:
+      - ./store:/usr/src/app
+    networks:
+      - persistence
+    depends_on:
+      - mysql
+
+networks:
+  persistence:
+    driver: bridge
+       
